@@ -35,6 +35,5 @@ public class HairRemoval {
         Mat output = new Mat();
         Photo.inpaint(src, thresholdedImage, output, 1, Photo.INPAINT_TELEA);
         Imgcodecs.imwrite("output.jpg", output);
-
     }
 }
