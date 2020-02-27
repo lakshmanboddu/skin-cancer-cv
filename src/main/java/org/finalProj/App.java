@@ -1,6 +1,5 @@
 package org.finalProj;
 
-import org.opencv.core.Core;
 
 public class App {
 
@@ -16,8 +15,6 @@ public class App {
 //        ImageIO.write(image, "jpg", op);
 //
 //        System.out.println("image Saved");
-        // Load OPEN CV CORE
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         AsymmetryDetection obj = new AsymmetryDetection();
         System.out.println(obj.symmetry);

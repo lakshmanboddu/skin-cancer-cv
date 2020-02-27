@@ -9,8 +9,9 @@
         <module name="skin-cancer-cv" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="skin-cancer-cv" target="" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="8" />
+  </component>
+  <component name="JavacSettings">
+    <option name="PREFER_TARGET_JDK_COMPILER" value="false" />
   </component>
 </project>

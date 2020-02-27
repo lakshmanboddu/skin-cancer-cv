@@ -1,34 +1,39 @@
 package org.finalProj;
 
-import org.opencv.core.*;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 
+import org.bytedeco.opencv.opencv_core.*;
+
+import static org.bytedeco.opencv.global.opencv_core.*;
+import static org.bytedeco.opencv.global.opencv_imgcodecs.*;
+import static org.bytedeco.opencv.global.opencv_imgproc.*;
+import static org.bytedeco.opencv.global.opencv_photo.INPAINT_TELEA;
+import static org.bytedeco.opencv.global.opencv_photo.inpaint;
+//https://github.com/bytedeco/javacv/blob/master/samples/ImageSegmentation.java
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class AsymmetryDetection {
 
     public String symmetry;
     AsymmetryDetection(){
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        Mat img = Imgcodecs.imread("src/resources/Melanoma-2.jpg");
+        Mat img = imread("src/resources/Melanoma-2.jpg");
         Mat gray = new Mat();
-        Imgproc.cvtColor(img,gray, Imgproc.COLOR_RGB2GRAY);
+        cvtColor(img,gray, COLOR_RGB2GRAY);
         Mat blur = new Mat();
-        Imgproc.GaussianBlur(gray, blur, new Size(5,5),0);
+        GaussianBlur(gray, blur, new Size(5,5),0);
         Mat thresh =  new Mat();
-        Imgproc.threshold(blur, thresh, 70, 255, Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_OTSU);
-        List<MatOfPoint> contours =  new ArrayList<MatOfPoint>();
-        Mat hierarchy = new Mat();
-        Imgproc.findContours(thresh, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-
+        threshold(blur, thresh, 70, 255, THRESH_BINARY_INV + THRESH_OTSU);
+        MatVector contours =  new MatVector();
+        findContours(thresh, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+//https://stackoverflow.com/questions/10668573/find-contours-in-javacv-or-opencv
 //        double max_cnt =  Imgproc.contourArea(contours.get(0));
         double maxArea = 0;
-        MatOfPoint maxContour = new MatOfPoint();
+        Mat maxContour = new Mat();
 //        https://www.programcreek.com/java-api-examples/?class=org.opencv.imgproc.Imgproc&method=contourArea
-        for (MatOfPoint contour : contours) {
-            double area = Imgproc.contourArea(contour);
+        Mat[] contoursArray = contours.get();
+        for (Mat contour : contoursArray) {
+            double area = contourArea( contour);
             if (area > maxArea) {
                 maxArea = area;
                 maxContour = contour;
@@ -38,14 +43,18 @@ public class AsymmetryDetection {
         // max_contour is a MatOfPoint object with int values
         //fitEllipse takes MatOfPoint2f which has float values
         //https://stackoverflow.com/questions/11273588/how-to-convert-matofpoint-to-matofpoint2f-in-opencv-java-api
-        MatOfPoint2f floatMaxContour = new MatOfPoint2f();
-        maxContour.convertTo(floatMaxContour, CvType.CV_32F);
-        RotatedRect ellipse = Imgproc.fitEllipse(floatMaxContour);
+//        Mat floatMaxContour = new Mat();
+//        maxContour.convertTo(floatMaxContour, CV_32F);
 
-        MatOfPoint ellipsePoints = new MatOfPoint();
-        Imgproc.ellipse2Poly(ellipse.center, ellipse.size,(int)ellipse.angle, 0,360, 1, ellipsePoints);
+//        RotatedRect ellipse1 = fitEllipse(floatMaxContour);
+        RotatedRect ellipse1 = fitEllipse(maxContour);
 
-        double comparisonValue = Imgproc.matchShapes(maxContour, ellipsePoints, 1, 0.0);
+
+        Point2dVector ellipsePoints = new Point2dVector();
+        ellipse2Poly( new Point2d( ellipse1.center().x(), ellipse1.center().y()), new Size2d(ellipse1.size()),(int)ellipse1.angle(), 0,360, 1, ellipsePoints);
+//        ellipse2Poly
+        Mat ellipsePts = new Mat(ellipsePoints);
+        double comparisonValue = matchShapes(maxContour, ellipsePts, 1, 0.0);
         if (comparisonValue < 0.099){
             this.symmetry = "Asymmetric";
             System.out.println("Asymmetric");
