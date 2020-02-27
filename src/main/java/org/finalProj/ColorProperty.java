@@ -2,21 +2,14 @@ package org.finalProj;
 
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.bytedeco.opencv.opencv_core.MatVector;
-import org.bytedeco.opencv.opencv_core.RotatedRect;
 import org.bytedeco.opencv.opencv_core.Size;
 
-import static org.bytedeco.opencv.global.opencv_core.*;
-import static org.bytedeco.opencv.global.opencv_imgcodecs.*;
+import static org.bytedeco.opencv.global.opencv_imgcodecs.imread;
 import static org.bytedeco.opencv.global.opencv_imgproc.*;
-import static org.bytedeco.opencv.global.opencv_photo.INPAINT_TELEA;
-import static org.bytedeco.opencv.global.opencv_photo.inpaint;
-//https://github.com/bytedeco/javacv/blob/master/samples/ImageSegmentation.java
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import static org.bytedeco.opencv.global.opencv_imgproc.contourArea;
 
-public class Border {
-    Border(){
+public class ColorProperty {
+    ColorProperty(){
         Mat img = imread("src/resources/Melanoma-2.jpg");
         Mat gray = new Mat();
         cvtColor(img, gray, COLOR_BGR2GRAY);
@@ -40,14 +33,7 @@ public class Border {
             }
         }
 
-        RotatedRect rect = minAreaRect(maxContour);
-        RotatedRect box = new RotatedRect();
-        boxPoints(box, maxContour);
-
-//        extLeft = (maxContour[maxContour[:, :, 0].argMin()][0])
-//        extRight = (maxContour[maxContour[:, :, 0].argMax()][0])
-//        extTop = (maxContour[maxContour[:, :, 1].argMin()][0])
-//        extBot = (maxContour[maxContour[:, :, 1].argMax()][0])
+//        if(maxContour)
 
     }
 }
