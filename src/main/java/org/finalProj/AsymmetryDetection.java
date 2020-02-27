@@ -29,7 +29,7 @@ public class AsymmetryDetection {
 
     public String symmetry;
     AsymmetryDetection(){
-        Mat img = imread("src/resources/Melanoma-2.jpg");
+        Mat img = imread("src/resources/output.jpg");
         Mat gray = new Mat();
         cvtColor(img,gray, COLOR_RGB2GRAY);
         Mat blur = new Mat();
@@ -59,6 +59,8 @@ public class AsymmetryDetection {
 //        maxContour.convertTo(floatMaxContour, CV_32F);
 
 //        RotatedRect ellipse1 = fitEllipse(floatMaxContour);
+
+//        https://stackoverflow.com/questions/53301086/how-to-identify-if-the-shapes-of-an-image-are-symmetric-or-asymmetric-using-open
         RotatedRect ellipse1 = fitEllipse(maxContour);
 
 

@@ -17,7 +17,7 @@ import java.util.List;
 
 public class Border {
     Border(){
-        Mat img = imread("src/resources/Melanoma-2.jpg");
+        Mat img = imread("src/resources/output.jpg");
         Mat gray = new Mat();
         cvtColor(img, gray, COLOR_BGR2GRAY);
         Mat blur = new Mat();
