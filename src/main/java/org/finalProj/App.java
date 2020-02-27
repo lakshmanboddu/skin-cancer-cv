@@ -6,7 +6,7 @@ public class App {
 
     public static void main(String[] args) {
 
-        HairRemoval.removeHair();
+//        HairRemoval.removeHair();
         AsymmetryDetection obj = new AsymmetryDetection();
         System.out.println(obj.symmetry);
         Border border = new Border();

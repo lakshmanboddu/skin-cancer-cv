@@ -5,15 +5,10 @@ import org.bytedeco.opencv.opencv_core.MatVector;
 import org.bytedeco.opencv.opencv_core.RotatedRect;
 import org.bytedeco.opencv.opencv_core.Size;
 
-import static org.bytedeco.opencv.global.opencv_core.*;
 import static org.bytedeco.opencv.global.opencv_imgcodecs.*;
 import static org.bytedeco.opencv.global.opencv_imgproc.*;
-import static org.bytedeco.opencv.global.opencv_photo.INPAINT_TELEA;
-import static org.bytedeco.opencv.global.opencv_photo.inpaint;
 //https://github.com/bytedeco/javacv/blob/master/samples/ImageSegmentation.java
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+
 
 public class Border {
     Border(){

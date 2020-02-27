@@ -9,19 +9,7 @@ import org.bytedeco.opencv.opencv_core.Size;
 import org.bytedeco.opencv.opencv_core.Size2d;
 
 import static org.bytedeco.opencv.global.opencv_imgcodecs.imread;
-import static org.bytedeco.opencv.global.opencv_imgproc.CHAIN_APPROX_SIMPLE;
-import static org.bytedeco.opencv.global.opencv_imgproc.COLOR_RGB2GRAY;
-import static org.bytedeco.opencv.global.opencv_imgproc.GaussianBlur;
-import static org.bytedeco.opencv.global.opencv_imgproc.RETR_EXTERNAL;
-import static org.bytedeco.opencv.global.opencv_imgproc.THRESH_BINARY_INV;
-import static org.bytedeco.opencv.global.opencv_imgproc.THRESH_OTSU;
-import static org.bytedeco.opencv.global.opencv_imgproc.contourArea;
-import static org.bytedeco.opencv.global.opencv_imgproc.cvtColor;
-import static org.bytedeco.opencv.global.opencv_imgproc.ellipse2Poly;
-import static org.bytedeco.opencv.global.opencv_imgproc.findContours;
-import static org.bytedeco.opencv.global.opencv_imgproc.fitEllipse;
-import static org.bytedeco.opencv.global.opencv_imgproc.matchShapes;
-import static org.bytedeco.opencv.global.opencv_imgproc.threshold;
+import static org.bytedeco.opencv.global.opencv_imgproc.*;
 //https://github.com/bytedeco/javacv/blob/master/samples/ImageSegmentation.java
 
 
@@ -31,7 +19,7 @@ public class AsymmetryDetection {
     AsymmetryDetection(){
         Mat img = imread("src/resources/output.jpg");
         Mat gray = new Mat();
-        cvtColor(img,gray, COLOR_RGB2GRAY);
+        cvtColor(img,gray, COLOR_BGR2GRAY);
         Mat blur = new Mat();
         GaussianBlur(gray, blur, new Size(5,5),0);
         Mat thresh =  new Mat();
@@ -69,7 +57,7 @@ public class AsymmetryDetection {
 //        ellipse2Poly
         Mat ellipsePts = new Mat(ellipsePoints);
         double comparisonValue = matchShapes(maxContour, ellipsePts, 1, 0.0);
-        if (comparisonValue < 0.099){
+        if (comparisonValue < 0.99){
             this.symmetry = "Asymmetric";
             System.out.println("Asymmetric");
         }
