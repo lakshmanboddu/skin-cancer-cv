@@ -4,11 +4,11 @@ import org.bytedeco.javacv.CanvasFrame;
 import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.opencv.opencv_core.Mat;
 
-import javax.swing.*;
+import javax.swing.WindowConstants;
 
 public class Display {
     public static void display(Mat image, String caption) {
-        // Create image window named "My Image".
+        // Create image window using the name as caption.
         final CanvasFrame canvas = new CanvasFrame(caption, 1.0);
 
         // Request closing of the application when the image window is closed.
