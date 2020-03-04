@@ -14,6 +14,8 @@ import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
+import org.deeplearning4j.optimize.api.InvocationType;
+import org.deeplearning4j.optimize.listeners.EvaluativeListener;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.evaluation.classification.Evaluation;
@@ -48,8 +50,6 @@ public class ModelTrainTest {
 
         int seed = 1234;    // number used to initialize a pseudorandom number generator.
         Random randNumGen = new Random(seed);
-
-        BasicConfigurator.configure(); //http://logging.apache.org/log4j/1.2/manual.html
 
         LOGGER.info("Data load...");
 
@@ -132,7 +132,9 @@ public class ModelTrainTest {
 
         MultiLayerNetwork model = new MultiLayerNetwork(conf);
         model.init();
-        model.setListeners(new ScoreIterationListener(10));
+//        model.setListeners(new ScoreIterationListener(10));
+        model.setListeners(new ScoreIterationListener(10), new EvaluativeListener(testIter, 1, InvocationType.EPOCH_END)); //Print score every 10 iterations and evaluate on test set every epoch
+
         LOGGER.info("Total num of params: {}", model.numParams());
 
         // evaluation while training (the score should go down)
