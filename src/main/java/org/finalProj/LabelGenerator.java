@@ -6,6 +6,7 @@ datavec classes to conveniently read the metadata csv file that
 accompanies the HAM10000 dataset so as to read the labels
 
 using pre-existing interface from the package org.datavec.api.io.labels
+https://deeplearning4j.org/api/latest/
 The package only has two classes:
  - ParentPathLabelGenerator -> Return parent folder name
  - PatternPathLabelGenerator -> return the file name
@@ -44,8 +45,10 @@ public class LabelGenerator implements PathLabelGenerator {
 
     public Writable getLabelForPath(String path) {
         String fileName = FilenameUtils.getName((new File(path)).getName());
+//        System.out.println(fileName);
+
         //Returns label for a give filename
-        return new Text(this.map.get(fileName));
+        return new Text(map.get(fileName.replaceAll(".jpg" , "")));
     }
 
     public Writable getLabelForPath(URI uri) {

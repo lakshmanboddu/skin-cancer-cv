@@ -1,5 +1,6 @@
 package org.finalProj;
 
+import org.apache.log4j.BasicConfigurator;
 import org.datavec.api.split.FileSplit;
 import org.datavec.image.loader.NativeImageLoader;
 import org.datavec.image.recordreader.ImageRecordReader;
@@ -35,29 +36,22 @@ import java.io.IOException;
 
 public class ModelTrainTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelTrainTest.class);
-    private static final String BASE_PATH = "ham10000";
+
 
     public static void trainTestModel() throws IOException {
         int height = 75;    // height of the picture in px
         int width = 100;     // width of the picture in px
         int channels = 3;   // single channel for grayscale images
-        int outputNum = 10; // 10 digits classification
+        int outputNum = 7; // 10 digits classification
         int batchSize = 54; // number of samples that will be propagated through the network in each iteration
         int nEpochs = 1;    // number of training epochs
 
         int seed = 1234;    // number used to initialize a pseudorandom number generator.
         Random randNumGen = new Random(seed);
 
+        BasicConfigurator.configure(); //http://logging.apache.org/log4j/1.2/manual.html
 
         LOGGER.info("Data load...");
-        if (!new File(BASE_PATH + "/HAM10000_images_part_1").exists()) {
-
-            LOGGER.debug("Data loaded");
-        }
-        else {
-            LOGGER.debug("Data not found");
-            System.exit(1);
-        }
 
 
         HashMap<String, String> map = new HashMap<>();
@@ -69,7 +63,8 @@ public class ModelTrainTest {
         map.put("vasc", "Vascular lesions");
         map.put("df", "Dermatofibroma");
 
-        File trainData = new File(BASE_PATH + "/HAM10000_images_part_1");
+        File trainData = new File("ham10000/HAM10000_images_part_1/");
+        System.out.println("Data loaded");
         FileSplit trainSplit = new FileSplit(trainData, NativeImageLoader.ALLOWED_FORMATS, randNumGen);
         LabelGenerator labelMaker = new LabelGenerator(); // get labels from CSV File
 
@@ -83,7 +78,7 @@ public class ModelTrainTest {
         trainIter.setPreProcessor(imageScaler);
 
         // vectorization of test data
-        File testData = new File(BASE_PATH + "/HAM10000_images_part_2");
+        File testData = new File("ham10000/HAM10000_images_part_2");
         FileSplit testSplit = new FileSplit(testData, NativeImageLoader.ALLOWED_FORMATS, randNumGen);
         ImageRecordReader testRR = new ImageRecordReader(height, width, channels, labelMaker);
         testRR.initialize(testSplit);
