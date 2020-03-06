@@ -44,7 +44,7 @@ public class ModelTrainTest {
         int height = 75;    // height of the picture in px
         int width = 100;     // width of the picture in px
         int channels = 3;   // single channel for grayscale images
-        int outputNum = 7; // 10 digits classification
+        int outputNum = 7; // 7 digits classification
         int batchSize = 54; // number of samples that will be propagated through the network in each iteration
         int nEpochs = 1;    // number of training epochs
 
@@ -54,22 +54,13 @@ public class ModelTrainTest {
         LOGGER.info("Data load...");
 
 
-        HashMap<String, String> map = new HashMap<>();
-        map.put("nv", "Melanocytic nevi");
-        map.put("mel", "Melanoma");
-        map.put("bkl", "Benign keratosis-like lesions");
-        map.put("bcc", "Basal cell carcinoma");
-        map.put("akiec", "Actinic keratoses");
-        map.put("vasc", "Vascular lesions");
-        map.put("df", "Dermatofibroma");
-
         File trainData = new File("ham10000/HAM10000_images_part_1/");
-        System.out.println("Data loaded");
+//        System.out.println("Data loaded");
         FileSplit trainSplit = new FileSplit(trainData, NativeImageLoader.ALLOWED_FORMATS, randNumGen);
         LabelGenerator labelMaker = new LabelGenerator(); // get labels from CSV File
 
         ImageRecordReader trainRR = new ImageRecordReader(height, width, channels, labelMaker);
-        trainRR.initialize(trainSplit);
+        trainRR.initialize(trainSplit,null);
         DataSetIterator trainIter = new RecordReaderDataSetIterator(trainRR, batchSize, 1, outputNum);
 
         // pixel values from 0-255 to 0-1 (min-max scaling)
@@ -83,22 +74,23 @@ public class ModelTrainTest {
         ImageRecordReader testRR = new ImageRecordReader(height, width, channels, labelMaker);
         testRR.initialize(testSplit);
         DataSetIterator testIter = new RecordReaderDataSetIterator(testRR, batchSize, 1, outputNum);
+        imageScaler.fit(testIter);
         testIter.setPreProcessor(imageScaler); // same normalization for better results
 
         LOGGER.info("Network configuration and training...");
         // reduce the learning rate as the number of training epochs increases
         // iteration #, learning rate
-        Map<Integer, Double> learningRateSchedule = new HashMap<>();
-        learningRateSchedule.put(0, 0.06);
-        learningRateSchedule.put(200, 0.05);
-        learningRateSchedule.put(600, 0.028);
-        learningRateSchedule.put(800, 0.0060);
-        learningRateSchedule.put(1000, 0.001);
+//        Map<Integer, Double> learningRateSchedule = new HashMap<>();
+//        learningRateSchedule.put(0, 0.06);
+//        learningRateSchedule.put(200, 0.05);
+//        learningRateSchedule.put(600, 0.028);
+//        learningRateSchedule.put(800, 0.0060);
+//        learningRateSchedule.put(1000, 0.001);
 
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
                 .l2(0.0005) // ridge regression value
-                .updater(new Nesterovs(new MapSchedule(ScheduleType.ITERATION, learningRateSchedule)))
+//                .updater(new Nesterovs(new MapSchedule(ScheduleType.ITERATION, learningRateSchedule)))
                 .weightInit(WeightInit.XAVIER)
                 .list()
                 .layer(new ConvolutionLayer.Builder(5, 5)
@@ -133,20 +125,20 @@ public class ModelTrainTest {
         MultiLayerNetwork model = new MultiLayerNetwork(conf);
         model.init();
 //        model.setListeners(new ScoreIterationListener(10));
-        model.setListeners(new ScoreIterationListener(10), new EvaluativeListener(testIter, 1, InvocationType.EPOCH_END)); //Print score every 10 iterations and evaluate on test set every epoch
+//        model.setListeners(new ScoreIterationListener(10), new EvaluativeListener(testIter, 1, InvocationType.EPOCH_END)); //Print score every 10 iterations and evaluate on test set every epoch
 
         LOGGER.info("Total num of params: {}", model.numParams());
 
         // evaluation while training (the score should go down)
-        for (int i = 0; i < nEpochs; i++) {
-            model.fit(trainIter);
-            LOGGER.info("Completed epoch {}", i);
+//        for (int i = 0; i < nEpochs; i++) {
+            model.fit(trainIter, nEpochs);
+            LOGGER.info("Completed epoch {}", nEpochs);
             Evaluation eval = model.evaluate(testIter);
             LOGGER.info(eval.stats());
 
             trainIter.reset();
             testIter.reset();
-        }
+//        }
 
         File ministModelPath = new File("src/resources/Model/model.zip");
         ModelSerializer.writeModel(model, ministModelPath, true);

@@ -36,9 +36,9 @@ public class LabelGenerator implements PathLabelGenerator {
         String line = br.readLine();
         while((line=br.readLine())!=null){
             String str[] = line.split(",");
-            for(int i=1;i<str.length;i++){
-                this.map.put(str[1], str[2]);
-            }
+//            for(int i=1;i<str.length;i++){
+            this.map.put(str[1], str[2]);
+//            }
         }
 
     }

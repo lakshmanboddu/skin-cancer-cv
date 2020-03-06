@@ -44,7 +44,7 @@ public class App {
         BasicConfigurator.configure(); //http://logging.apache.org/log4j/1.2/manual.html
 
 
-//        ModelTrainTest.trainTestModel();
+        ModelTrainTest.trainTestModel();
 
         String filechose = fileChose();
 
@@ -54,7 +54,7 @@ public class App {
             LOGGER.info("Saved Model Found!");
         } else {
             LOGGER.error("File not found!");
-            LOGGER.error("This example depends on running MnistImagePipelineExampleSave, run that example first");
+            LOGGER.error("This example depends on running ModelTrainTest, run that example first");
             System.exit(0);
         }
 
@@ -77,6 +77,15 @@ public class App {
 
         // Pass through to neural Net
         INDArray output = model.output(image);
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("nv", "Melanocytic nevi");
+        map.put("mel", "Melanoma");
+        map.put("bkl", "Benign keratosis-like lesions");
+        map.put("bcc", "Basal cell carcinoma");
+        map.put("akiec", "Actinic keratoses");
+        map.put("vasc", "Vascular lesions");
+        map.put("df", "Dermatofibroma");
 
         LOGGER.info("The file chosen was " + filechose);
         LOGGER.info("The neural nets prediction (list of probabilities per label)");
