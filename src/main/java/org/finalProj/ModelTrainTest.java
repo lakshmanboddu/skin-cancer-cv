@@ -62,7 +62,7 @@ public class ModelTrainTest {
 
         ImageRecordReader trainRR = new ImageRecordReader(height, width, channels, labelMaker);
         trainRR.initialize(trainSplit,null);
-        DataSetIterator trainIter = new RecordReaderDataSetIterator(trainRR, batchSize, 1, outputNum);
+        DataSetIterator trainIter = new RecordReaderDataSetIterator(trainRR, batchSize, 1, 7);
 
         // pixel values from 0-255 to 0-1 (min-max scaling)
         DataNormalization imageScaler = new ImagePreProcessingScaler();
@@ -131,15 +131,17 @@ public class ModelTrainTest {
         LOGGER.info("Total num of params: {}", model.numParams());
 
         // evaluation while training (the score should go down)
-//        for (int i = 0; i < nEpochs; i++) {
-            model.fit(trainIter, nEpochs);
+        for (int i = 0; i < nEpochs; i++) {
+//            model.fit(trainIter, nEpochs);
+            model.fit(trainIter);
             LOGGER.info("Completed epoch {}", nEpochs);
+//            LOGGER.info("Completed epoch {}", i+1);
             Evaluation eval = model.evaluate(testIter);
             LOGGER.info(eval.stats());
 
             trainIter.reset();
             testIter.reset();
-//        }
+        }
 
         File modelPath = new File("src/resources/Model/model.zip");
         ModelSerializer.writeModel(model, modelPath, true);

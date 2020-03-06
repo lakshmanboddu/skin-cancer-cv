@@ -46,17 +46,20 @@ public class App {
         BasicConfigurator.configure(); //http://logging.apache.org/log4j/1.2/manual.html
 
 
-//        ModelTrainTest.trainTestModel();
+        ModelTrainTest.trainTestModel();
 
         String filechose = fileChose();
-
+        if(filechose == null){
+            System.out.println("No file is chosen");
+            System.exit(0);
+        }
         File modelLocation = new File("src/resources/Model/model.zip");
         // Check for presence of saved model
         if (modelLocation.exists()) {
             LOGGER.info("Saved Model Found!");
         } else {
-            LOGGER.error("Saved Model Not found not found!");
-            LOGGER.error("This example depends on running ModelTrainTest, run that example first");
+            LOGGER.error("Saved Model Not found!");
+            LOGGER.error("This example depends on running ModelTrainTest, run that first");
             System.exit(0);
         }
 
@@ -94,20 +97,21 @@ public class App {
         //log.info("## List of Labels in Order## ");
         // In new versions labels are always in order
         LOGGER.info(output.toString());
+
         String s= output.toString();
         String s1 = s.replaceAll("[^.,0-9]", "");
 //        s.replaceAll("]]", "");
         String str[] = s1.split(",");
         Double d= Double.parseDouble(str[0]);
-        int i=0;
+        int key=0;
         for (int j=1; j<str.length; j++ ){
             double d1 = Double.parseDouble(str[j]);
             if(d1>d){
                 d= d1;
-                i=j;
+                key=j;
             }
         }
-        System.out.println("The Predicted disease is "+ map.get(i)+ " with "+ new DecimalFormat("#.##").format(d*100)+ "% probaility");
+        System.out.println("The Predicted disease is "+ map.get(key)+ " with "+ new DecimalFormat("#.##").format(d*100)+ "% probaility");
 
     }
 
