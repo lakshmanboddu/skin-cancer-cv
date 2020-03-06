@@ -2,6 +2,7 @@ package org.finalProj;
 
 
 import org.apache.log4j.BasicConfigurator;
+import org.bytedeco.opencv.opencv_core.Mat;
 import org.datavec.image.loader.NativeImageLoader;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -13,11 +14,12 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Objects;
 
 public class App {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ModelTrainTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
 
     private static String fileChose() {
         JFileChooser fc = new JFileChooser();
@@ -44,31 +46,31 @@ public class App {
         BasicConfigurator.configure(); //http://logging.apache.org/log4j/1.2/manual.html
 
 
-        ModelTrainTest.trainTestModel();
+//        ModelTrainTest.trainTestModel();
 
         String filechose = fileChose();
 
-        File locationToSave = new File("src/resources/Model/model.zip");
+        File modelLocation = new File("src/resources/Model/model.zip");
         // Check for presence of saved model
-        if (locationToSave.exists()) {
+        if (modelLocation.exists()) {
             LOGGER.info("Saved Model Found!");
         } else {
-            LOGGER.error("File not found!");
+            LOGGER.error("Saved Model Not found not found!");
             LOGGER.error("This example depends on running ModelTrainTest, run that example first");
             System.exit(0);
         }
 
-        MultiLayerNetwork model = MultiLayerNetwork.load(locationToSave, true);
+        MultiLayerNetwork model = MultiLayerNetwork.load(modelLocation, true);
 
         LOGGER.info("TEST YOUR IMAGE AGAINST SAVED NETWORK");
         // FileChose is a string we will need a file
         File file = new File(Objects.requireNonNull(filechose));
-
+        Mat hairRemoved = HairRemoval.removeHair(file.toString());
         // Use NativeImageLoader to convert to numerical matrix
         NativeImageLoader loader = new NativeImageLoader(height, width, channels);
 
         // Get the image into an INDarray
-        INDArray image = loader.asMatrix(file);
+        INDArray image = loader.asMatrix(hairRemoved);
 
         // 0-255
         // 0-1
@@ -78,20 +80,35 @@ public class App {
         // Pass through to neural Net
         INDArray output = model.output(image);
 
-        HashMap<String, String> map = new HashMap<>();
-        map.put("nv", "Melanocytic nevi");
-        map.put("mel", "Melanoma");
-        map.put("bkl", "Benign keratosis-like lesions");
-        map.put("bcc", "Basal cell carcinoma");
-        map.put("akiec", "Actinic keratoses");
-        map.put("vasc", "Vascular lesions");
-        map.put("df", "Dermatofibroma");
+        HashMap<Integer, String> map = new HashMap<>();
+        map.put(0, "Melanocytic nevi");
+        map.put(1, "Melanoma");
+        map.put(2, "Benign keratosis-like lesions");
+        map.put(3, "Basal cell carcinoma");
+        map.put(4, "Actinic keratoses");
+        map.put(5, "Vascular lesions");
+        map.put(6, "Dermatofibroma");
 
         LOGGER.info("The file chosen was " + filechose);
         LOGGER.info("The neural nets prediction (list of probabilities per label)");
         //log.info("## List of Labels in Order## ");
         // In new versions labels are always in order
         LOGGER.info(output.toString());
+        String s= output.toString();
+        String s1 = s.replaceAll("[^.,0-9]", "");
+//        s.replaceAll("]]", "");
+        String str[] = s1.split(",");
+        Double d= Double.parseDouble(str[0]);
+        int i=0;
+        for (int j=1; j<str.length; j++ ){
+            double d1 = Double.parseDouble(str[j]);
+            if(d1>d){
+                d= d1;
+                i=j;
+            }
+        }
+        System.out.println("The Predicted disease is "+ map.get(i)+ " with "+ new DecimalFormat("#.##").format(d*100)+ "% probaility");
+
     }
 
 }

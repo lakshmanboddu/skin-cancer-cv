@@ -4,6 +4,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.datavec.api.split.FileSplit;
 import org.datavec.image.loader.NativeImageLoader;
 import org.datavec.image.recordreader.ImageRecordReader;
+//https://deeplearning4j.org/docs/latest/datavec-overview
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
@@ -140,9 +141,9 @@ public class ModelTrainTest {
             testIter.reset();
 //        }
 
-        File ministModelPath = new File("src/resources/Model/model.zip");
-        ModelSerializer.writeModel(model, ministModelPath, true);
-        LOGGER.info("The MINIST model has been saved in {}", ministModelPath.getPath());
+        File modelPath = new File("src/resources/Model/model.zip");
+        ModelSerializer.writeModel(model, modelPath, true);
+        LOGGER.info("The model has been saved in {}", modelPath.getPath());
     }
 }
 
