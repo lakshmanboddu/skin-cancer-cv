@@ -1,6 +1,6 @@
 package org.finalProj;
 /*
-@Author : Lakshman Boddu, Kamalpreet Kaur
+@Authors : Lakshman Boddu, Kamalpreet Kaur
 This new class is created as supplement to the already existing
 datavec classes to conveniently read the metadata csv file that
 accompanies the HAM10000 dataset so as to read the labels
@@ -16,7 +16,6 @@ We need something else, so we created this class
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
@@ -45,6 +44,7 @@ public class LabelGenerator implements PathLabelGenerator {
 
     public Writable getLabelForPath(String path) {
         String fileName = FilenameUtils.getName((new File(path)).getName());
+//            System.exit(0);
 //        System.out.println(fileName);
 
         //Returns label for a give filename

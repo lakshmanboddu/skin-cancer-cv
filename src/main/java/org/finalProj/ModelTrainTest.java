@@ -47,7 +47,7 @@ public class ModelTrainTest {
         int channels = 3;   // single channel for grayscale images
         int outputNum = 7; // 7 digits classification
         int batchSize = 54; // number of samples that will be propagated through the network in each iteration
-        int nEpochs = 1;    // number of training epochs
+        int nEpochs = 150;    // number of training epochs
 
         int seed = 1234;    // number used to initialize a pseudorandom number generator.
         Random randNumGen = new Random(seed);
@@ -55,13 +55,13 @@ public class ModelTrainTest {
         LOGGER.info("Data load...");
 
 
-        File trainData = new File("ham10000/HAM10000_images_part_1/");
-//        System.out.println("Data loaded");
+        File trainData = new File("ham10000/HAM10000_images");
+        System.out.println("Data loaded");
         FileSplit trainSplit = new FileSplit(trainData, NativeImageLoader.ALLOWED_FORMATS, randNumGen);
         LabelGenerator labelMaker = new LabelGenerator(); // get labels from CSV File
 
         ImageRecordReader trainRR = new ImageRecordReader(height, width, channels, labelMaker);
-        trainRR.initialize(trainSplit,null);
+        trainRR.initialize(trainSplit, null);
         DataSetIterator trainIter = new RecordReaderDataSetIterator(trainRR, batchSize, 1, 7);
 
         // pixel values from 0-255 to 0-1 (min-max scaling)
@@ -70,7 +70,7 @@ public class ModelTrainTest {
         trainIter.setPreProcessor(imageScaler);
 
         // vectorization of test data
-        File testData = new File("ham10000/HAM10000_images_part_2");
+        File testData = new File("ham10000/HAM10000_images");
         FileSplit testSplit = new FileSplit(testData, NativeImageLoader.ALLOWED_FORMATS, randNumGen);
         ImageRecordReader testRR = new ImageRecordReader(height, width, channels, labelMaker);
         testRR.initialize(testSplit);
@@ -133,15 +133,20 @@ public class ModelTrainTest {
         // evaluation while training (the score should go down)
         for (int i = 0; i < nEpochs; i++) {
 //            model.fit(trainIter, nEpochs);
-            model.fit(trainIter);
-            LOGGER.info("Completed epoch {}", nEpochs);
-//            LOGGER.info("Completed epoch {}", i+1);
-            Evaluation eval = model.evaluate(testIter);
-            LOGGER.info(eval.stats());
+            LOGGER.info("Start epoch {}", i + 1, " of ", nEpochs);
 
+            model.fit(trainIter);
+//            LOGGER.info("Completed epoch {}", nEpochs);
+            LOGGER.info("Completed epoch {}", i + 1, " of ", nEpochs);
             trainIter.reset();
             testIter.reset();
         }
+        Evaluation eval = model.evaluate(testIter);
+        LOGGER.info(eval.stats());
+
+//            trainIter.reset();
+//            testIter.reset();
+//    }
 
         File modelPath = new File("src/resources/Model/model.zip");
         ModelSerializer.writeModel(model, modelPath, true);

@@ -11,7 +11,7 @@ import org.nd4j.linalg.dataset.api.preprocessor.ImagePreProcessingScaler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
+import javax.swing.JFileChooser;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -34,19 +34,18 @@ public class App {
 
     public static void main(String[] args) throws IOException {
 
-//        HairRemoval.removeHair();
-//        AsymmetryDetection obj = new AsymmetryDetection();
-//        System.out.println(obj.symmetry);
-//        Border border = new Border();
-//        ColorProperty colorProperty = new ColorProperty();
-//        Diameter d = new Diameter();
+
         int height = 75;    // height of the picture in px
         int width = 100;     // width of the picture in px
         int channels = 3;
         BasicConfigurator.configure(); //http://logging.apache.org/log4j/1.2/manual.html
 
 
-        ModelTrainTest.trainTestModel();
+//        {
+//        ModelTrainTest.trainTestModel();
+//            System.out.println("Train Done");
+//            System.exit(0);
+//        }
 
         String filechose = fileChose();
         if(filechose == null){
@@ -84,13 +83,14 @@ public class App {
         INDArray output = model.output(image);
 
         HashMap<Integer, String> map = new HashMap<>();
-        map.put(0, "Melanocytic nevi");
-        map.put(1, "Melanoma");
+        map.put(0, "Actinic keratoses");
+        map.put(1, "Basal cell carcinoma");
         map.put(2, "Benign keratosis-like lesions");
-        map.put(3, "Basal cell carcinoma");
-        map.put(4, "Actinic keratoses");
-        map.put(5, "Vascular lesions");
-        map.put(6, "Dermatofibroma");
+        map.put(3, "Dermatofibroma");
+        map.put(4, "Melanoma");
+        map.put(5, "Melanocytic nevi");
+        map.put(6, "Vascular lesions");
+
 
         LOGGER.info("The file chosen was " + filechose);
         LOGGER.info("The neural nets prediction (list of probabilities per label)");
@@ -102,17 +102,22 @@ public class App {
         String s1 = s.replaceAll("[^.,0-9]", "");
 //        s.replaceAll("]]", "");
         String str[] = s1.split(",");
-        Double d= Double.parseDouble(str[0]);
+        double max= Double.parseDouble(str[0]);
         int key=0;
         for (int j=1; j<str.length; j++ ){
             double d1 = Double.parseDouble(str[j]);
-            if(d1>d){
-                d= d1;
+            if(d1>max ){
+                max= d1;
                 key=j;
             }
         }
-        System.out.println("The Predicted disease is "+ map.get(key)+ " with "+ new DecimalFormat("#.##").format(d*100)+ "% probaility");
 
+        if(max<0.50){
+            System.out.println("The Disease cannot be predicted");
+        }
+        else {
+            System.out.println("The Predicted disease is " + map.get(key) + " with " + new DecimalFormat("#.##").format(d * 100) + "% probaility");
+        }
     }
 
 }
