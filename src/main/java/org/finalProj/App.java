@@ -116,7 +116,7 @@ public class App {
             System.out.println("The Disease cannot be predicted");
         }
         else {
-            System.out.println("The Predicted disease is " + map.get(key) + " with " + new DecimalFormat("#.##").format(d * 100) + "% probaility");
+            System.out.println("The Predicted disease is " + map.get(key) + " with " + new DecimalFormat("#.##").format(max * 100) + "% probaility");
         }
     }
 
