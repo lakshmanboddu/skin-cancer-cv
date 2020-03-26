@@ -1,6 +1,6 @@
 package org.finalProj;
 
-import org.apache.log4j.BasicConfigurator;
+//import org.apache.log4j.BasicConfigurator;
 import org.datavec.api.split.FileSplit;
 import org.datavec.image.loader.NativeImageLoader;
 import org.datavec.image.recordreader.ImageRecordReader;
@@ -15,19 +15,13 @@ import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
-import org.deeplearning4j.optimize.api.InvocationType;
-import org.deeplearning4j.optimize.listeners.EvaluativeListener;
-import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.evaluation.classification.Evaluation;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.ImagePreProcessingScaler;
-import org.nd4j.linalg.learning.config.Nesterovs;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
-import org.nd4j.linalg.schedule.MapSchedule;
-import org.nd4j.linalg.schedule.ScheduleType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,18 +119,14 @@ public class ModelTrainTest {
 
         MultiLayerNetwork model = new MultiLayerNetwork(conf);
         model.init();
-//        model.setListeners(new ScoreIterationListener(10));
-//        model.setListeners(new ScoreIterationListener(10), new EvaluativeListener(testIter, 1, InvocationType.EPOCH_END)); //Print score every 10 iterations and evaluate on test set every epoch
 
         LOGGER.info("Total num of params: {}", model.numParams());
 
         // evaluation while training (the score should go down)
         for (int i = 0; i < nEpochs; i++) {
-//            model.fit(trainIter, nEpochs);
             LOGGER.info("Start epoch {}", i + 1, " of ", nEpochs);
 
             model.fit(trainIter);
-//            LOGGER.info("Completed epoch {}", nEpochs);
             LOGGER.info("Completed epoch {}", i + 1, " of ", nEpochs);
             trainIter.reset();
             testIter.reset();
@@ -144,11 +134,7 @@ public class ModelTrainTest {
         Evaluation eval = model.evaluate(testIter);
         LOGGER.info(eval.stats());
 
-//            trainIter.reset();
-//            testIter.reset();
-//    }
-
-        File modelPath = new File("src/resources/Model/model.zip");
+        File modelPath = new File("src/data/Model/model.zip");
         ModelSerializer.writeModel(model, modelPath, true);
         LOGGER.info("The model has been saved in {}", modelPath.getPath());
     }
