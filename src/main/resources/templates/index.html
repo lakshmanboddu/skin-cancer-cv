@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Skin-Cancer Detection</title>	
+	<link rel="stylesheet"href="style.css"/>
+</head>
+<body>
+	<div id="h1">
+		<body background ="image/b4.jpg"> 
+		<div id="header">
+	</div>
+
+
+	<div id="content">
+		<div id="left">
+			<table>
+				<tr><td>Skin Cancer</td></tr>
+				<tr><td>Types of skin Cancer</td></tr>
+				<tr><td>Non-Melanoma
+					<ol>
+						<li><p>Basal-call Carcinoma</p></li>
+						<li><p>Squamous-cell Carcinoma</p></li></ol>
+				</td></tr>
+				<tr><td>Melanoma</td></tr>
+			</table>
+		</div>
+
+		<div id="middle">
+			<table border ="2px" height="400" width="400">
+			<caption>Upload your skin image for Evaluation</caption>
+				<th>To diagnose your skin lession, Please upload an image!!!</th>
+				<tr><td><img>Upload an Image </img></td></tr>
+				<tr><td>
+<!--					<form action="/predict" modelAttribute="prediction" method="post">-->
+<!--						<input type="submit" value="Upload Image" style="width: 150px">-->
+<!--					</form>-->
+
+					<form action="/predict" method="post" enctype="multipart/form-data">
+						<input type="file" name="files" accept="image/*"><br><br>
+						<input type="submit" value="Upload File">
+					</form>
+				</td></tr>
+			</table>
+		</div>
+	</div>
+
+	<div id="footer">
+		<a href="index.html">|Home|</a>
+		<a href="about.html">|About US|</a>
+		<a href="contact.html">|Contact US|</a>
+	</div>
+</body>
+</html>
