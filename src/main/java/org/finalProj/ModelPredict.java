@@ -107,7 +107,7 @@ public class ModelPredict {
             }
         }
 
-        if (max < 0.50) {
+        if (max < 0.50||max>1) {
             return ("The Disease cannot be predicted");
         } else {
             return ("The Predicted disease is " + map.get(key) + " with " + new DecimalFormat("#.##").format(max * 100) + "% probaility");
